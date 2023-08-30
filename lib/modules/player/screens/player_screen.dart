@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
+import 'package:sound_rhythm/modules/utils/format_utils.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key, required this.title});
@@ -18,6 +19,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   bool isSongPlaying = false;
   bool isSongLooping = false;
   double playbackSpeed = 1.0;
+  Duration songPosition = const Duration();
+  Duration songDuration = const Duration();
+  String songTitle = "";
 
   @override
   void initState() {
@@ -27,6 +31,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
     audioPlayer.onPlayerComplete.listen((event) {
       setState(() {
         isSongPlaying = false;
+      });
+    });
+    audioPlayer.onPositionChanged.listen((event) {
+      setState(() {
+        songPosition = event;
       });
     });
   }
@@ -65,6 +74,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
     });
   }
 
+  Future<void> seekInSong(double newValue) async {
+    await audioPlayer.seek(Duration(seconds: newValue.toInt()));
+  }
+
+  void updateTitle(title) async {
+    setState(() {
+      songTitle = title;
+    });
+  }
+
   songChangedCallback(int index, reason) {
     updateSong(index);
   }
@@ -73,29 +92,50 @@ class _PlayerScreenState extends State<PlayerScreen> {
     stopAudioPlayer();
     await audioPlayer.release();
 
+    print("index is: $index");
     switch (index) {
       case 0:
         // await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
-        await audioPlayer.setSource(AssetSource('sounds/coin.wav'));
+        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
+        updateTitle("Wonderful");
+        break;
       case 1:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion1.wav'));
+        updateTitle("Halo");
+        break;
       case 2:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion2.wav'));
+        updateTitle("Lead the way");
+        break;
       case 3:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion3.mp3'));
+        updateTitle("Fallin");
+        break;
       case 4:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion4.mp3'));
+        updateTitle("Woman's");
+        break;
       case 5:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion5.mp3'));
+        updateTitle("Déjà vu");
+        break;
       case 6:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion6.mp3'));
+        updateTitle("Respect");
+        break;
       case 7:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion7.mp3'));
+        updateTitle("Vision");
+        break;
       case 8:
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion8.mid'));
+        updateTitle("Wonderful Midi");
+        break;
       default:
         await audioPlayer.setSource(AssetSource('sounds/coin.wav'));
+        break;
     }
+    songDuration = await audioPlayer.getDuration() ?? const Duration();
   }
 
   @override
@@ -119,6 +159,41 @@ class _PlayerScreenState extends State<PlayerScreen> {
         ImageSlider(
           imageSliders: imageSliders,
           songChangedCallback: songChangedCallback,
+        ),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                songTitle,
+                style: const TextStyle(fontSize: 20),
+              ),
+              Slider(
+                value: songPosition.inSeconds.toDouble(),
+                onChanged: (newValue) {
+                  seekInSong(newValue);
+                },
+                min: 0,
+                max: songDuration.inSeconds.toDouble(),
+                label: FormatUtils.formatDuration(songPosition),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        FormatUtils.formatDuration(songPosition),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      Text(
+                        FormatUtils.formatDuration(songDuration),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ]),
+              ),
+            ],
+          ),
         ),
         SizedBox(
           height: 100,
@@ -173,7 +248,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Speed: ${playbackSpeed.toStringAsFixed(2)}',
+                'Play back rate: ${playbackSpeed.toStringAsFixed(1)}',
                 style: const TextStyle(fontSize: 20),
               ),
               Slider(
