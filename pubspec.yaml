@@ -38,6 +38,7 @@ dependencies:
   flutter_native_splash: ^2.3.2
   audioplayers: ^5.1.0
   carousel_slider: ^4.0.0
+  flutter_launcher_icons:
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,12 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 
+
+# Flutter icon configuration
+flutter_icons:
+  image_path: "assets/img/app-icon.png"
+  ios: true
+  android: true
 
 flutter_native_splash:
 
