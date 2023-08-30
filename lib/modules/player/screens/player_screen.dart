@@ -156,6 +156,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        const SizedBox(
+          height: 16,
+        ),
         ImageSlider(
           imageSliders: imageSliders,
           songChangedCallback: songChangedCallback,
