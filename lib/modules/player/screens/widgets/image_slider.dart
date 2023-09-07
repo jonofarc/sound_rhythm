@@ -14,11 +14,12 @@ class ImageSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return CarouselSlider(
       options: CarouselOptions(
+        height: 200,
         onPageChanged: songChangedCallback,
         enableInfiniteScroll: false,
         autoPlay: false,
         aspectRatio: 2.0,
-        viewportFraction: 0.5,
+        viewportFraction: 0.25,
         enlargeCenterPage: true,
       ),
       items: imageSliders,
