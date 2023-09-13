@@ -4,20 +4,11 @@ import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
 import 'package:sound_rhythm/modules/utils/format_utils.dart';
 import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 
-class PlayerViewDesktop extends StatefulWidget {
-  const PlayerViewDesktop({super.key, required this.playerController});
+class PlayerViewDesktop extends StatelessWidget {
+  const PlayerViewDesktop({Key? key, required this.playerController})
+      : super(key: key);
 
   final PlayerController playerController;
-
-  @override
-  State<PlayerViewDesktop> createState() => _PlayerViewDesktopState();
-}
-
-class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,21 +35,20 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
               children: <Widget>[
             ImageSlider(
               imageSliders: imageSliders,
-              songChangedCallback: widget.playerController.songChangedCallback,
+              songChangedCallback: playerController.songChangedCallback,
             ),
             Text(
-              widget.playerController.songTitle,
+              playerController.songTitle,
               style: const TextStyle(fontSize: 20),
             ),
             Slider(
-              value: widget.playerController.songPosition.inSeconds.toDouble(),
+              value: playerController.songPosition.inSeconds.toDouble(),
               onChanged: (newValue) {
-                widget.playerController.seekInSong(newValue);
+                playerController.seekInSong(newValue);
               },
               min: 0,
-              max: widget.playerController.songDuration.inSeconds.toDouble(),
-              label: FormatUtils.formatDuration(
-                  widget.playerController.songPosition),
+              max: playerController.songDuration.inSeconds.toDouble(),
+              label: FormatUtils.formatDuration(playerController.songPosition),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
@@ -66,13 +56,11 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      FormatUtils.formatDuration(
-                          widget.playerController.songPosition),
+                      FormatUtils.formatDuration(playerController.songPosition),
                       style: const TextStyle(fontSize: 20),
                     ),
                     Text(
-                      FormatUtils.formatDuration(
-                          widget.playerController.songDuration),
+                      FormatUtils.formatDuration(playerController.songDuration),
                       style: const TextStyle(fontSize: 20),
                     ),
                   ]),
@@ -84,15 +72,15 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: widget.playerController.isSongPlaying
+                    icon: playerController.isSongPlaying
                         ? const Icon(Icons.pause_circle_outline)
                         : const Icon(Icons.play_circle_outlined),
                     iconSize: 48,
                     onPressed: () {
-                      if (widget.playerController.isSongPlaying) {
-                        widget.playerController.pauseSong();
+                      if (playerController.isSongPlaying) {
+                        playerController.pauseSong();
                       } else {
-                        widget.playerController.playSong();
+                        playerController.playSong();
                       }
                     },
                   ),
@@ -100,14 +88,14 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                     icon: const Icon(Icons.stop_circle_outlined),
                     iconSize: 48,
                     onPressed: () {
-                      widget.playerController.stopAudioPlayer();
+                      playerController.stopAudioPlayer();
                     },
                   ),
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: widget.playerController.isSongLooping
+                      color: playerController.isSongLooping
                           ? Colors.grey
                           : Colors.transparent,
                       border: Border.all(
@@ -120,7 +108,7 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                       icon: const Icon(Icons.loop),
                       iconSize: 20,
                       onPressed: () {
-                        widget.playerController.toggleLoop();
+                        playerController.toggleLoop();
                       },
                     ),
                   ),
@@ -141,20 +129,18 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Play back rate: ${widget.playerController.playbackSpeed.toStringAsFixed(1)}',
+              'Play back rate: ${playerController.playbackSpeed.toStringAsFixed(1)}',
               style: const TextStyle(fontSize: 20),
             ),
             Slider(
-              value: widget.playerController.playbackSpeed,
+              value: playerController.playbackSpeed,
               onChanged: (newValue) {
-                setState(() {
-                  widget.playerController.setPlaybackRate(newValue);
-                });
+                playerController.setPlaybackRate(newValue);
               },
               min: 0.5,
               max: 2,
               divisions: 15,
-              label: widget.playerController.playbackSpeed.toStringAsFixed(2),
+              label: playerController.playbackSpeed.toStringAsFixed(2),
             ),
           ],
         ),

@@ -70,6 +70,7 @@ class PlayerController {
   void setPlaybackRate(double speed) async {
     playbackSpeed = speed;
     audioPlayer.setPlaybackRate(playbackSpeed);
+    callback();
   }
 
   songChangedCallback(int index, reason) {
