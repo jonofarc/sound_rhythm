@@ -1,45 +1,22 @@
-import 'dart:ffi';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sound_rhythm/modules/player/player_controller.dart';
 import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
 import 'package:sound_rhythm/modules/utils/format_utils.dart';
 import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
-import 'package:sound_rhythm/modules/utils/responsive.dart';
 
 class PlayerViewDesktop extends StatefulWidget {
-  const PlayerViewDesktop(
-      {super.key, required this.title, required this.audioPlayer});
+  const PlayerViewDesktop({super.key, required this.playerController});
 
-  final String title;
-  final AudioPlayer audioPlayer;
+  final PlayerController playerController;
 
   @override
   State<PlayerViewDesktop> createState() => _PlayerViewDesktopState();
 }
 
 class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
-  late VoidCallback callback;
-
-  late PlayerController playerController;
-
   @override
   void initState() {
     super.initState();
-
-    callback = () {
-      setState(() {});
-    };
-
-    playerController =
-        PlayerController(audioPlayer: widget.audioPlayer, callback: callback);
-  }
-
-  @override
-  void dispose() {
-    callback = () {};
-    super.dispose();
   }
 
   @override
@@ -67,20 +44,21 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
               children: <Widget>[
             ImageSlider(
               imageSliders: imageSliders,
-              songChangedCallback: playerController.songChangedCallback,
+              songChangedCallback: widget.playerController.songChangedCallback,
             ),
             Text(
-              playerController.songTitle,
+              widget.playerController.songTitle,
               style: const TextStyle(fontSize: 20),
             ),
             Slider(
-              value: playerController.songPosition.inSeconds.toDouble(),
+              value: widget.playerController.songPosition.inSeconds.toDouble(),
               onChanged: (newValue) {
-                playerController.seekInSong(newValue);
+                widget.playerController.seekInSong(newValue);
               },
               min: 0,
-              max: playerController.songDuration.inSeconds.toDouble(),
-              label: FormatUtils.formatDuration(playerController.songPosition),
+              max: widget.playerController.songDuration.inSeconds.toDouble(),
+              label: FormatUtils.formatDuration(
+                  widget.playerController.songPosition),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
@@ -88,11 +66,13 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      FormatUtils.formatDuration(playerController.songPosition),
+                      FormatUtils.formatDuration(
+                          widget.playerController.songPosition),
                       style: const TextStyle(fontSize: 20),
                     ),
                     Text(
-                      FormatUtils.formatDuration(playerController.songDuration),
+                      FormatUtils.formatDuration(
+                          widget.playerController.songDuration),
                       style: const TextStyle(fontSize: 20),
                     ),
                   ]),
@@ -104,15 +84,15 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: playerController.isSongPlaying
+                    icon: widget.playerController.isSongPlaying
                         ? const Icon(Icons.pause_circle_outline)
                         : const Icon(Icons.play_circle_outlined),
                     iconSize: 48,
                     onPressed: () {
-                      if (playerController.isSongPlaying) {
-                        playerController.pauseSong();
+                      if (widget.playerController.isSongPlaying) {
+                        widget.playerController.pauseSong();
                       } else {
-                        playerController.playSong();
+                        widget.playerController.playSong();
                       }
                     },
                   ),
@@ -120,14 +100,14 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                     icon: const Icon(Icons.stop_circle_outlined),
                     iconSize: 48,
                     onPressed: () {
-                      playerController.stopAudioPlayer();
+                      widget.playerController.stopAudioPlayer();
                     },
                   ),
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: playerController.isSongLooping
+                      color: widget.playerController.isSongLooping
                           ? Colors.grey
                           : Colors.transparent,
                       border: Border.all(
@@ -140,7 +120,7 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
                       icon: const Icon(Icons.loop),
                       iconSize: 20,
                       onPressed: () {
-                        playerController.toggleLoop();
+                        widget.playerController.toggleLoop();
                       },
                     ),
                   ),
@@ -161,20 +141,20 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Play back rate: ${playerController.playbackSpeed.toStringAsFixed(1)}',
+              'Play back rate: ${widget.playerController.playbackSpeed.toStringAsFixed(1)}',
               style: const TextStyle(fontSize: 20),
             ),
             Slider(
-              value: playerController.playbackSpeed,
+              value: widget.playerController.playbackSpeed,
               onChanged: (newValue) {
                 setState(() {
-                  playerController.setPlaybackRate(newValue);
+                  widget.playerController.setPlaybackRate(newValue);
                 });
               },
               min: 0.5,
               max: 2,
               divisions: 15,
-              label: playerController.playbackSpeed.toStringAsFixed(2),
+              label: widget.playerController.playbackSpeed.toStringAsFixed(2),
             ),
           ],
         ),
