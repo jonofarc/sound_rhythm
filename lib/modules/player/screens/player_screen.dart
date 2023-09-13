@@ -16,7 +16,10 @@ class PlayerScreen extends StatelessWidget {
     Widget layout = Container();
 
     if (Responsive.isMobile(context)) {
-      layout = PlayerViewMobile(title: title);
+      layout = PlayerViewMobile(
+        title: title,
+        audioPlayer: audioPlayer,
+      );
     } else {
       layout = PlayerViewDesktop(
         title: title,

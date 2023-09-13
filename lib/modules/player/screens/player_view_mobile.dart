@@ -2,156 +2,49 @@ import 'dart:ffi';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_rhythm/modules/player/player_controller.dart';
 import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
 import 'package:sound_rhythm/modules/utils/format_utils.dart';
+import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 import 'package:sound_rhythm/modules/utils/responsive.dart';
 
 class PlayerViewMobile extends StatefulWidget {
-  const PlayerViewMobile({super.key, required this.title});
+  const PlayerViewMobile(
+      {super.key, required this.title, required this.audioPlayer});
 
   final String title;
+  final AudioPlayer audioPlayer;
 
   @override
   State<PlayerViewMobile> createState() => _PlayerViewMobileState();
 }
 
 class _PlayerViewMobileState extends State<PlayerViewMobile> {
-  AudioPlayer audioPlayer = AudioPlayer();
-  bool isSongPlaying = false;
-  bool isSongLooping = false;
-  double playbackSpeed = 1.0;
-  Duration songPosition = const Duration();
-  Duration songDuration = const Duration();
-  String songTitle = "";
+  late VoidCallback callback;
+
+  late PlayerController playerController;
 
   @override
   void initState() {
     super.initState();
-    updateSong(0);
-    audioPlayer.setReleaseMode(ReleaseMode.stop);
-    audioPlayer.onPlayerComplete.listen((event) {
-      setState(() {
-        isSongPlaying = false;
-      });
-    });
-    audioPlayer.onPositionChanged.listen((event) {
-      setState(() {
-        songPosition = event;
-      });
-    });
+
+    callback = () {
+      setState(() {});
+    };
+
+    playerController =
+        PlayerController(audioPlayer: widget.audioPlayer, callback: callback);
   }
 
-  Future<void> playSong() async {
-    await audioPlayer.setVolume(1.0);
-    await audioPlayer.resume();
-    setState(() {
-      isSongPlaying = true;
-    });
-  }
-
-  Future<void> pauseSong() async {
-    await audioPlayer.pause();
-    setState(() {
-      isSongPlaying = false;
-    });
-  }
-
-  Future<void> stopAudioPlayer() async {
-    await audioPlayer.stop();
-    setState(() {
-      isSongPlaying = false;
-    });
-  }
-
-  Future<void> toggleLoop() async {
-    if (isSongLooping) {
-      await audioPlayer.setReleaseMode(ReleaseMode.stop);
-    } else {
-      await audioPlayer.setReleaseMode(ReleaseMode.loop);
-    }
-
-    setState(() {
-      isSongLooping = !isSongLooping;
-    });
-  }
-
-  Future<void> seekInSong(double newValue) async {
-    await audioPlayer.seek(Duration(seconds: newValue.toInt()));
-  }
-
-  void updateTitle(title) async {
-    setState(() {
-      songTitle = title;
-    });
-  }
-
-  songChangedCallback(int index, reason) {
-    updateSong(index);
-  }
-
-  Future<void> updateSong(int index) async {
-    stopAudioPlayer();
-    await audioPlayer.release();
-
-    print("index is: $index");
-    switch (index) {
-      case 0:
-        // await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
-        updateTitle("Wonderful");
-        break;
-      case 1:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion1.wav'));
-        updateTitle("Halo");
-        break;
-      case 2:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion2.wav'));
-        updateTitle("Lead the way");
-        break;
-      case 3:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion3.mp3'));
-        updateTitle("Fallin");
-        break;
-      case 4:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion4.mp3'));
-        updateTitle("Woman's");
-        break;
-      case 5:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion5.mp3'));
-        updateTitle("Déjà vu");
-        break;
-      case 6:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion6.mp3'));
-        updateTitle("Respect");
-        break;
-      case 7:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion7.mp3'));
-        updateTitle("Vision");
-        break;
-      case 8:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion8.mid'));
-        updateTitle("Wonderful Midi");
-        break;
-      default:
-        await audioPlayer.setSource(AssetSource('sounds/coin.wav'));
-        break;
-    }
-    songDuration = await audioPlayer.getDuration() ?? const Duration();
+  @override
+  void dispose() {
+    callback = () {};
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> imageSliders = [];
-
-    for (int i = 0; i <= 8; i++) {
-      imageSliders.add(
-        Image.asset(
-          'assets/img/notes$i.png', // Path to your asset image
-          width: 300,
-          height: 300,
-        ),
-      );
-    }
+    List<Widget> imageSliders = ImageSliderUtils.getCovers();
 
     return SingleChildScrollView(
         child: Column(
@@ -162,24 +55,25 @@ class _PlayerViewMobileState extends State<PlayerViewMobile> {
         ),
         ImageSlider(
           imageSliders: imageSliders,
-          songChangedCallback: songChangedCallback,
+          songChangedCallback: playerController.songChangedCallback,
         ),
         Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                songTitle,
+                playerController.songTitle,
                 style: const TextStyle(fontSize: 20),
               ),
               Slider(
-                value: songPosition.inSeconds.toDouble(),
+                value: playerController.songPosition.inSeconds.toDouble(),
                 onChanged: (newValue) {
-                  seekInSong(newValue);
+                  playerController.seekInSong(newValue);
                 },
                 min: 0,
-                max: songDuration.inSeconds.toDouble(),
-                label: FormatUtils.formatDuration(songPosition),
+                max: playerController.songDuration.inSeconds.toDouble(),
+                label:
+                    FormatUtils.formatDuration(playerController.songPosition),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
@@ -187,11 +81,13 @@ class _PlayerViewMobileState extends State<PlayerViewMobile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        FormatUtils.formatDuration(songPosition),
+                        FormatUtils.formatDuration(
+                            playerController.songPosition),
                         style: const TextStyle(fontSize: 20),
                       ),
                       Text(
-                        FormatUtils.formatDuration(songDuration),
+                        FormatUtils.formatDuration(
+                            playerController.songDuration),
                         style: const TextStyle(fontSize: 20),
                       ),
                     ]),
@@ -206,15 +102,15 @@ class _PlayerViewMobileState extends State<PlayerViewMobile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: isSongPlaying
+                icon: playerController.isSongPlaying
                     ? const Icon(Icons.pause_circle_outline)
                     : const Icon(Icons.play_circle_outlined),
                 iconSize: 48,
                 onPressed: () {
-                  if (isSongPlaying) {
-                    pauseSong();
+                  if (playerController.isSongPlaying) {
+                    playerController.pauseSong();
                   } else {
-                    playSong();
+                    playerController.playSong();
                   }
                 },
               ),
@@ -222,14 +118,16 @@ class _PlayerViewMobileState extends State<PlayerViewMobile> {
                 icon: const Icon(Icons.stop_circle_outlined),
                 iconSize: 48,
                 onPressed: () {
-                  stopAudioPlayer();
+                  playerController.stopAudioPlayer();
                 },
               ),
               Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isSongLooping ? Colors.grey : Colors.transparent,
+                  color: playerController.isSongLooping
+                      ? Colors.grey
+                      : Colors.transparent,
                   border: Border.all(
                     color: Colors.black, // Border color
                     width: 2.0, // Border width
@@ -240,7 +138,7 @@ class _PlayerViewMobileState extends State<PlayerViewMobile> {
                   icon: const Icon(Icons.loop),
                   iconSize: 20,
                   onPressed: () {
-                    toggleLoop();
+                    playerController.toggleLoop();
                   },
                 ),
               ),
@@ -252,21 +150,22 @@ class _PlayerViewMobileState extends State<PlayerViewMobile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'Play back rate: ${playbackSpeed.toStringAsFixed(1)}',
+                'Play back rate: ${playerController.playbackSpeed.toStringAsFixed(1)}',
                 style: const TextStyle(fontSize: 20),
               ),
               Slider(
-                value: playbackSpeed,
+                value: playerController.playbackSpeed,
                 onChanged: (newValue) {
                   setState(() {
-                    playbackSpeed = newValue;
-                    audioPlayer.setPlaybackRate(playbackSpeed);
+                    playerController.playbackSpeed = newValue;
+                    playerController.audioPlayer
+                        .setPlaybackRate(playerController.playbackSpeed);
                   });
                 },
                 min: 0.5,
                 max: 2,
                 divisions: 15,
-                label: playbackSpeed.toStringAsFixed(2),
+                label: playerController.playbackSpeed.toStringAsFixed(2),
               ),
             ],
           ),

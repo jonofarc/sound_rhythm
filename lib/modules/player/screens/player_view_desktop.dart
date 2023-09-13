@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sound_rhythm/modules/player/player_controller.dart';
 import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
 import 'package:sound_rhythm/modules/utils/format_utils.dart';
+import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 import 'package:sound_rhythm/modules/utils/responsive.dart';
 
 class PlayerViewDesktop extends StatefulWidget {
@@ -36,6 +37,12 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
   }
 
   @override
+  void dispose() {
+    callback = () {};
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
@@ -50,16 +57,7 @@ class _PlayerViewDesktopState extends State<PlayerViewDesktop> {
   }
 
   Widget leftPanel() {
-    List<Widget> imageSliders = [];
-    for (int i = 0; i <= 8; i++) {
-      imageSliders.add(
-        Image.asset(
-          'assets/img/notes$i.png', // Path to your asset image
-          width: 300,
-          height: 300,
-        ),
-      );
-    }
+    List<Widget> imageSliders = ImageSliderUtils.getCovers();
 
     return Expanded(
       flex: 1,

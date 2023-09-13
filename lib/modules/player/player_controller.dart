@@ -1,10 +1,5 @@
-import 'dart:ffi';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
-import 'package:sound_rhythm/modules/utils/format_utils.dart';
-import 'package:sound_rhythm/modules/utils/responsive.dart';
 
 class PlayerController {
   AudioPlayer audioPlayer = AudioPlayer();
@@ -17,10 +12,7 @@ class PlayerController {
   String songTitle = "";
 
   PlayerController(
-      {required AudioPlayer audioPlayer, required VoidCallback callback}) {
-    this.audioPlayer = audioPlayer;
-    print("222222222222");
-
+      {required this.audioPlayer, required VoidCallback callback}) {
     updateSong(0);
     audioPlayer.setReleaseMode(ReleaseMode.stop);
     audioPlayer.onPlayerComplete.listen((event) {
