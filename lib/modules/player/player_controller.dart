@@ -22,9 +22,8 @@ class PlayerController {
     audioPlayer.onPositionChanged.listen((event) async {
       songPosition = event;
 
-      //check if we are in loop range otherwise set minimun loop range
-      //if (songPosition.inSeconds.toDouble() <= loopRangeValues.start || songPosition.inSeconds.toDouble() >= loopRangeValues.end) {
-      if (songPosition.inSeconds.toDouble() < loopRangeValues.start ||
+      //check if we are in loop range otherwise set minimum loop range
+      if (songPosition.inSeconds.toDouble() < loopRangeValues.start - 1 ||
           songPosition.inSeconds.toDouble() > loopRangeValues.end) {
         await seekInSong(loopRangeValues.start);
       }
@@ -85,7 +84,9 @@ class PlayerController {
 
   void setPlaybackRate(double speed) async {
     playbackSpeed = speed;
+    await playSong();
     audioPlayer.setPlaybackRate(playbackSpeed);
+
     callback();
   }
 

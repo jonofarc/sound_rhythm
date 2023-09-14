@@ -7,9 +7,7 @@ import 'package:sound_rhythm/modules/utils/responsive.dart';
 import 'package:flutter/material.dart';
 
 class PlayerScreen extends StatefulWidget {
-  const PlayerScreen({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const PlayerScreen({Key? key}) : super(key: key);
 
   @override
   _PlayerScreenState createState() => _PlayerScreenState();

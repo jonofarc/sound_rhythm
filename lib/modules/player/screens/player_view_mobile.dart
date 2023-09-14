@@ -154,8 +154,7 @@ class PlayerViewMobile extends StatelessWidget {
               Slider(
                 value: playerController.playbackSpeed,
                 onChanged: (newValue) {
-                  playerController.audioPlayer
-                      .setPlaybackRate(playerController.playbackSpeed);
+                  playerController.setPlaybackRate(newValue);
                 },
                 min: 0.5,
                 max: 2,
