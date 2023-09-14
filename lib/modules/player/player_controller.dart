@@ -2,27 +2,43 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class PlayerController {
-  AudioPlayer audioPlayer = AudioPlayer();
-  VoidCallback callback = () {};
+  AudioPlayer audioPlayer;
+  VoidCallback callback;
   bool isSongPlaying = false;
   bool isSongLooping = false;
   double playbackSpeed = 1.0;
   Duration songPosition = const Duration();
   Duration songDuration = const Duration();
   String songTitle = "";
+  RangeValues loopRangeValues = const RangeValues(0, 0);
 
-  PlayerController(
-      {required this.audioPlayer, required VoidCallback callback}) {
+  PlayerController({required this.audioPlayer, required this.callback}) {
     updateSong(0);
     audioPlayer.setReleaseMode(ReleaseMode.stop);
     audioPlayer.onPlayerComplete.listen((event) {
       isSongPlaying = false;
       callback();
     });
-    audioPlayer.onPositionChanged.listen((event) {
+    audioPlayer.onPositionChanged.listen((event) async {
       songPosition = event;
+
+      //check if we are in loop range otherwise set minimun loop range
+      //if (songPosition.inSeconds.toDouble() <= loopRangeValues.start || songPosition.inSeconds.toDouble() >= loopRangeValues.end) {
+      if (songPosition.inSeconds.toDouble() < loopRangeValues.start ||
+          songPosition.inSeconds.toDouble() > loopRangeValues.end) {
+        await seekInSong(loopRangeValues.start);
+      }
+
       callback();
     });
+  }
+
+  Future<void> setLoopRangeValues(RangeValues values) async {
+    loopRangeValues = values;
+    print("New ran1ges: $values");
+    print("loopedRangeValues: $loopRangeValues");
+
+    callback();
   }
 
   Future<void> playSong() async {
@@ -81,10 +97,8 @@ class PlayerController {
     stopAudioPlayer();
     await audioPlayer.release();
 
-    print("index is: $index");
     switch (index) {
       case 0:
-        // await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
         await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
         updateTitle("Wonderful");
         break;
@@ -125,5 +139,6 @@ class PlayerController {
         break;
     }
     songDuration = await audioPlayer.getDuration() ?? const Duration();
+    loopRangeValues = RangeValues(0, songDuration.inSeconds.toDouble());
   }
 }
