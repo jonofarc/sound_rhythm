@@ -62,34 +62,6 @@ class PlayerViewMobile extends StatelessWidget {
                       ),
                     ]),
               ),
-              RangeSlider(
-                values: playerController.loopRangeValues,
-                max: playerController.songDuration.inSeconds.toDouble(),
-                labels: RangeLabels(
-                  playerController.loopRangeValues.start.round().toString(),
-                  playerController.loopRangeValues.end.round().toString(),
-                ),
-                onChanged: (RangeValues values) {
-                  playerController.setLoopRangeValues(values);
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        FormatUtils.formatNum(
-                            playerController.loopRangeValues.start),
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                      Text(
-                        FormatUtils.formatNum(
-                            playerController.loopRangeValues.end),
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ]),
-              ),
             ],
           ),
         ),
@@ -163,6 +135,35 @@ class PlayerViewMobile extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        const Text(
+          'Loop Range',
+          style: TextStyle(fontSize: 20),
+        ),
+        RangeSlider(
+          values: playerController.loopRangeValues,
+          max: playerController.songDuration.inSeconds.toDouble(),
+          labels: RangeLabels(
+            playerController.loopRangeValues.start.round().toString(),
+            playerController.loopRangeValues.end.round().toString(),
+          ),
+          onChanged: (RangeValues values) {
+            playerController.setLoopRangeValues(values);
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(
+              FormatUtils.formatNum(playerController.loopRangeValues.start),
+              style: const TextStyle(fontSize: 20),
+            ),
+            Text(
+              FormatUtils.formatNum(playerController.loopRangeValues.end),
+              style: const TextStyle(fontSize: 20),
+            ),
+          ]),
         ),
       ],
     ));
