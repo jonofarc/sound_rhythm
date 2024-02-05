@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class FormatUtils {
   static String formatDuration(Duration? duration) {
     var timeString = "";

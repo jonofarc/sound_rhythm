@@ -99,7 +99,7 @@ class PlayerViewMobile extends StatelessWidget {
                       ? Colors.grey
                       : Colors.transparent,
                   border: Border.all(
-                    color: Colors.black, // Border color
+                    color: Colors.red, // Border color
                     width: 2.0, // Border width
                   ),
                   shape: BoxShape.circle,

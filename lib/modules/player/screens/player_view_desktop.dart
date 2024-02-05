@@ -16,7 +16,7 @@ class PlayerViewDesktop extends StatelessWidget {
       children: [
         leftPanel(context),
         const VerticalDivider(
-          color: Colors.black,
+          color: Colors.red,
           thickness: 2,
         ),
         rightPanel(),
