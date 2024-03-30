@@ -20,7 +20,7 @@ class PlayerViewDesktop extends StatelessWidget {
       children: [
         leftPanel(context),
         const VerticalDivider(
-          color: Colors.red,
+          color: Colors.black,
           thickness: 2,
         ),
         rightPanel(),
@@ -99,6 +99,7 @@ class PlayerViewDesktop extends StatelessWidget {
                           playerController.stopAudioPlayer();
                         },
                       ),
+                      const SizedBox(width: 7.0),
                       Container(
                         width: 40,
                         height: 40,
@@ -114,6 +115,9 @@ class PlayerViewDesktop extends StatelessWidget {
                         ),
                         child: IconButton(
                           icon: const Icon(Icons.loop),
+                          color: playerController.isSongLooping
+                              ? Colors.white
+                              : Colors.black,
                           iconSize: 20,
                           onPressed: () {
                             playerController.toggleLoop();
