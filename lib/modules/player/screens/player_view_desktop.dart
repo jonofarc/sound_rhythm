@@ -5,10 +5,14 @@ import 'package:sound_rhythm/modules/utils/format_utils.dart';
 import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 
 class PlayerViewDesktop extends StatelessWidget {
-  const PlayerViewDesktop({Key? key, required this.playerController})
-      : super(key: key);
+  const PlayerViewDesktop({
+    Key? key,
+    required this.playerController,
+    required this.imageSliders,
+  }) : super(key: key);
 
   final PlayerController playerController;
+  final List<Widget> imageSliders;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,6 @@ class PlayerViewDesktop extends StatelessWidget {
   }
 
   Widget leftPanel(BuildContext context) {
-    List<Widget> imageSliders = ImageSliderUtils.getCovers();
     double screenHeight = MediaQuery.of(context).size.height;
     return Expanded(
       flex: 1,

@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:sound_rhythm/modules/player/player_controller.dart';
 import 'package:sound_rhythm/modules/player/screens/widgets/image_slider.dart';
 import 'package:sound_rhythm/modules/utils/format_utils.dart';
-import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 
 class PlayerViewMobile extends StatelessWidget {
   const PlayerViewMobile({
     Key? key,
     required this.playerController,
+    required this.imageSliders,
   }) : super(key: key);
 
   final PlayerController playerController;
+  final List<Widget> imageSliders;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> imageSliders = ImageSliderUtils.getCovers();
-
     return SingleChildScrollView(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -76,6 +75,7 @@ class PlayerViewMobile extends StatelessWidget {
                     ? const Icon(Icons.pause_circle_outline)
                     : const Icon(Icons.play_circle_outlined),
                 iconSize: 48,
+                color: Colors.black,
                 onPressed: () {
                   if (playerController.isSongPlaying) {
                     playerController.pauseSong();
@@ -86,26 +86,30 @@ class PlayerViewMobile extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.stop_circle_outlined),
+                color: Colors.black,
                 iconSize: 48,
                 onPressed: () {
                   playerController.stopAudioPlayer();
                 },
               ),
+              const SizedBox(width: 7.0),
               Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
                   color: playerController.isSongLooping
-                      ? Colors.grey
+                      ? Colors.black
                       : Colors.transparent,
                   border: Border.all(
-                    color: Colors.red, // Border color
-                    width: 2.0, // Border width
+                    width: 3.0, // Border width
                   ),
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.loop),
+                  color: playerController.isSongLooping
+                      ? Colors.white
+                      : Colors.black,
                   iconSize: 20,
                   onPressed: () {
                     playerController.toggleLoop();

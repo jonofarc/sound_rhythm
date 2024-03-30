@@ -1,5 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_rhythm/modules/player/models/song.dart';
+import 'package:sound_rhythm/modules/utils/song_utils.dart';
 
 class PlayerController {
   AudioPlayer audioPlayer;
@@ -57,6 +59,7 @@ class PlayerController {
 
   Future<void> stopAudioPlayer() async {
     await audioPlayer.stop();
+    songPosition = Duration.zero;
 
     isSongPlaying = false;
     callback();
@@ -95,50 +98,12 @@ class PlayerController {
   }
 
   Future<void> updateSong(int index) async {
-    stopAudioPlayer();
+    await stopAudioPlayer();
     await audioPlayer.release();
 
-    switch (index) {
-      case 0:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion0.wav'));
-        updateTitle("Wonderful");
-        break;
-      case 1:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion1.wav'));
-        updateTitle("Halo");
-        break;
-      case 2:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion2.wav'));
-        updateTitle("Lead the way");
-        break;
-      case 3:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion3.mp3'));
-        updateTitle("Fallin");
-        break;
-      case 4:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion4.mp3'));
-        updateTitle("Woman's");
-        break;
-      case 5:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion5.mp3'));
-        updateTitle("Déjà vu");
-        break;
-      case 6:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion6.mp3'));
-        updateTitle("Respect");
-        break;
-      case 7:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion7.mp3'));
-        updateTitle("Vision");
-        break;
-      case 8:
-        await audioPlayer.setSource(AssetSource('sounds/Vocalizacion8.mid'));
-        updateTitle("Wonderful Midi");
-        break;
-      default:
-        await audioPlayer.setSource(AssetSource('sounds/coin.wav'));
-        break;
-    }
+    await audioPlayer.setSource(SongUtils.songs[index].source);
+    updateTitle(SongUtils.songs[index].name);
+
     songDuration = await audioPlayer.getDuration() ?? const Duration();
     loopRangeValues = RangeValues(0, songDuration.inSeconds.toDouble());
   }

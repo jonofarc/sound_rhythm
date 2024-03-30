@@ -3,22 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:sound_rhythm/modules/player/player_controller.dart';
 import 'package:sound_rhythm/modules/player/screens/player_view_desktop.dart';
 import 'package:sound_rhythm/modules/player/screens/player_view_mobile.dart';
+import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 import 'package:sound_rhythm/modules/utils/responsive.dart';
-import 'package:flutter/material.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({Key? key}) : super(key: key);
 
   @override
-  _PlayerScreenState createState() => _PlayerScreenState();
+  PlayerScreenState createState() => PlayerScreenState();
 }
 
-class _PlayerScreenState extends State<PlayerScreen> {
+class PlayerScreenState extends State<PlayerScreen> {
   final AudioPlayer audioPlayer = AudioPlayer();
 
   late VoidCallback callback;
 
   late PlayerController playerController;
+  List<Widget> imageSliders = ImageSliderUtils.getCovers();
 
   @override
   void initState() {
@@ -39,10 +40,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (Responsive.isMobile(context)) {
       layout = PlayerViewMobile(
         playerController: playerController,
+        imageSliders: imageSliders,
       );
     } else {
       layout = PlayerViewDesktop(
         playerController: playerController,
+        imageSliders: imageSliders,
       );
     }
     return layout;
