@@ -1,5 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_rhythm/modules/login/login_controller.dart';
+import 'package:sound_rhythm/modules/login/screens/login_view_mobile.dart';
 import 'package:sound_rhythm/modules/player/player_controller.dart';
 import 'package:sound_rhythm/modules/player/screens/player_view_desktop.dart';
 import 'package:sound_rhythm/modules/player/screens/player_view_mobile.dart';
@@ -18,7 +20,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   late VoidCallback callback;
 
-  late PlayerController playerController;
+  late LoginController loginController;
   List<Widget> imageSliders = ImageSliderUtils.getCovers();
 
   @override
@@ -29,8 +31,7 @@ class LoginScreenState extends State<LoginScreen> {
       setState(() {});
     };
 
-    playerController =
-        PlayerController(audioPlayer: audioPlayer, callback: callback);
+    loginController = LoginController();
   }
 
   @override
@@ -38,14 +39,12 @@ class LoginScreenState extends State<LoginScreen> {
     Widget layout = Container();
 
     if (Responsive.isMobile(context)) {
-      layout = PlayerViewMobile(
-        playerController: playerController,
-        imageSliders: imageSliders,
+      layout = LoginViewMobile(
+        loginController: loginController,
       );
     } else {
-      layout = PlayerViewDesktop(
-        playerController: playerController,
-        imageSliders: imageSliders,
+      layout = LoginViewMobile(
+        loginController: loginController,
       );
     }
     return layout;

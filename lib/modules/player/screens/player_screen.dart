@@ -5,6 +5,7 @@ import 'package:sound_rhythm/modules/player/screens/player_view_desktop.dart';
 import 'package:sound_rhythm/modules/player/screens/player_view_mobile.dart';
 import 'package:sound_rhythm/modules/utils/image_slider_utils.dart';
 import 'package:sound_rhythm/modules/utils/responsive.dart';
+import 'package:sound_rhythm/modules/utils/widget_utils.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({Key? key}) : super(key: key);
@@ -48,7 +49,8 @@ class PlayerScreenState extends State<PlayerScreen> {
         imageSliders: imageSliders,
       );
     }
-    return layout;
+    return Scaffold(
+        appBar: WidgetUtils().getLogOutAppbar(context), body: layout);
   }
 
   @override

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sound_rhythm/modules/login/screens/login_screen.dart';
 import 'package:sound_rhythm/modules/player/screens/player_screen.dart';
+import 'package:sound_rhythm/modules/utils/constants.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Vocalíz',
+      title: appName,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
@@ -27,10 +29,10 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       top: true,
       child: Scaffold(
-        body: PlayerScreen(),
+        body: LoginScreen(),
       ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sound_rhythm/shared/shared_preferences/local_storage.dart';
 import 'package:sound_rhythm/shared/shared_preferences/local_storage_key.dart';
 
-
 class AppUtils {
   // do all the cleaning and logic needed for a logout
   Future<void> doLogout(BuildContext context) async {

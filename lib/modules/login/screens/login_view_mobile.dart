@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sound_rhythm/modules/login/credentials_validation.dart';
+import 'package:sound_rhythm/modules/login/login_controller.dart';
+import 'package:sound_rhythm/modules/player/screens/player_screen.dart';
+import 'package:sound_rhythm/modules/utils/constants.dart';
 import 'package:sound_rhythm/modules/utils/log.dart';
 import 'package:sound_rhythm/shared/shared_preferences/local_storage.dart';
 import 'package:sound_rhythm/shared/shared_preferences/local_storage_key.dart';
@@ -7,12 +10,10 @@ import 'package:sound_rhythm/shared/shared_preferences/local_storage_key.dart';
 class LoginViewMobile extends StatefulWidget {
   const LoginViewMobile({
     super.key,
-    this.loading = false,
-    this.errorMessage = "",
+    required this.loginController,
   });
 
-  final bool loading;
-  final String errorMessage;
+  final LoginController loginController;
 
   @override
   _LoginViewMobileState createState() => _LoginViewMobileState();
@@ -22,6 +23,7 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
   final TextEditingController _userNameTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
   var loginEnabled = false;
+  var showError = false;
 
   @override
   void dispose() {
@@ -52,14 +54,19 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
         _userNameTextController.text = storedUsername;
         _passwordTextController.text = storedPassword;
 
-        _loginSubmit(userName: storedUsername, password: storedPassword);
+        if (mounted) {
+          widget.loginController.loginSubmit(
+              userName: storedUsername,
+              password: storedPassword,
+              context: context);
+        }
       }
     });
   }
 
   @override
   Widget build(BuildContext buildContext) {
-    var borderColor = widget.errorMessage.isNotEmpty
+    var borderColor = showError
         ? const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.red),
           )
@@ -67,16 +74,16 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
 
     return Padding(
       padding: const EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
+        left: paddingDefault,
+        right: paddingDefault,
       ),
       child: Column(
         children: [
           const SizedBox(
-            height: 16.0,
+            height: paddingDefault,
           ),
           const SizedBox(
-            height: 16.0,
+            height: paddingDefault,
           ),
           TextField(
             controller: _userNameTextController,
@@ -87,7 +94,7 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
             ),
           ),
           const SizedBox(
-            height: 16.0,
+            height: paddingDefault,
           ),
           TextField(
             controller: _passwordTextController,
@@ -99,29 +106,30 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
             ),
           ),
           const SizedBox(
-            height: 16.0,
+            height: paddingDefault,
           ),
-          if (widget.loading) ...[
-            const CircularProgressIndicator()
-          ] else ...[
-            SizedBox(
-              width: 300.0, // Set the button width to 300 pixels
-              child: ElevatedButton(
-                onPressed: loginEnabled
-                    ? () {
-                        _loginSubmit(
-                            userName: _userNameTextController.text,
-                            password: _passwordTextController.text);
-                      }
-                    : null,
-                child: const Text("Login"),
-              ),
+          SizedBox(
+            width: 300.0, // Set the button width to 300 pixels
+            child: ElevatedButton(
+              onPressed: loginEnabled
+                  ? () {
+                      widget.loginController.loginSubmit(
+                          userName: _userNameTextController.text,
+                          password: _passwordTextController.text,
+                          context: context);
+
+                      setState(() {
+                        showError = !widget.loginController.userLoggedIn;
+                      });
+                    }
+                  : null,
+              child: const Text("Login"),
             ),
-          ],
-          const SizedBox(
-            height: 16.0,
           ),
-          if (widget.errorMessage.isNotEmpty)
+          const SizedBox(
+            height: paddingDefault,
+          ),
+          if (showError)
             const Text(
               "Login failed. Please check your username and password and try again.",
               style: TextStyle(
@@ -133,25 +141,6 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
       ),
     );
   }
-
-  _loginSubmit({required String userName, required String password}) {
-    //TODO do login here
-  }
-
-  /*
-  this function could be refactor  on a more compact way such as
-
-  void loginEnableCheck() {
-    final credentialValidation = CredentialValidation();
-    setState(() {
-      loginEnabled = credentialValidation.validatePassword(
-          password: _passwordTextController.text) && credentialValidation.validateUserName(
-          username: _userNameTextController.text);
-    });
-  }
-
-  but separating the validation results makes it more readable and less obfuscated
-   */
 
   void loginEnableCheck() {
     final credentialValidation = CredentialValidation();
