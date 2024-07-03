@@ -82,6 +82,20 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
           const SizedBox(
             height: paddingDefault,
           ),
+          Container(
+            width: 200,
+            height: 200,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: Image.asset(
+              "assets/splash.png",
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover, // Adjust this as per your needs
+            ),
+          ),
           const SizedBox(
             height: paddingDefault,
           ),
