@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:sound_rhythm/modules/player/models/song.dart';
+import 'package:sound_rhythm/modules/utils/log.dart';
 import 'package:sound_rhythm/modules/utils/song_utils.dart';
 
 class PlayerController {
@@ -36,8 +36,8 @@ class PlayerController {
 
   Future<void> setLoopRangeValues(RangeValues values) async {
     loopRangeValues = values;
-    print("New ran1ges: $values");
-    print("loopedRangeValues: $loopRangeValues");
+    Log.debug("New ran1ges: $values");
+    Log.debug("loopedRangeValues: $loopRangeValues");
 
     callback();
   }
